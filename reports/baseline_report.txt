@@ -1,0 +1,32 @@
+============================================================
+BASELINE BENCHMARK — UNOPTIMIZED
+============================================================
+
+Configuration:
+- File Format        : CSV
+- Shuffle Partitions : 200
+- Broadcast Join     : No
+- Caching            : No
+- Partition Pruning  : No
+
+Dataset:
+- Orders   : 1,000,000
+- Users    : 100,000
+- Products : 10,000
+
+Stage Timings:
+- CSV Read      : 9.29s
+- Join          : 1.95s
+- Aggregation   : 3.41s
+- Write         : 5.71s
+--------------------------------
+TOTAL            : 20.36s
+
+Observations:
+- CSV read dominates runtime.
+- Aggregation includes shuffle + sort.
+- Write time significant due to CSV output.
+- No optimization strategies applied.
+
+This is the BEFORE benchmark.
+All improvements will be measured against 20.36 seconds.
