@@ -1,0 +1,39 @@
+============================================================
+EXPERIMENT 2 — Broadcast Join Optimization
+============================================================
+
+Built On:
+- Parquet format (Exp1 applied)
+
+Change Applied:
+- Broadcast users (100k rows)
+- Broadcast products (10k rows)
+
+Control:
+- Shuffle Partitions : 200
+- No caching
+- No partition pruning
+
+------------------------------------------------------------
+Stage Timings
+------------------------------------------------------------
+
+Stage           Exp1        Exp2
+------------------------------------------------------------
+Read            5.63s       4.97s
+Join            2.34s       2.18s
+Aggregation     3.10s       2.87s
+Write           4.62s       4.24s
+------------------------------------------------------------
+TOTAL           15.69s      14.27s
+------------------------------------------------------------
+
+Observations:
+- Join improved slightly (~7%).
+- Overall runtime improved by ~1.4 seconds.
+- Broadcast impact limited due to local execution mode.
+- Join was not the primary bottleneck.
+
+Conclusion:
+Broadcast join provides modest gains at this data scale.
+Optimization impact depends heavily on workload size and cluster setup.
