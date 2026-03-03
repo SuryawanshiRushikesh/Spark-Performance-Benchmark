@@ -1,0 +1,37 @@
+============================================================
+EXPERIMENT 1 — File Format Optimization (CSV → Parquet)
+============================================================
+
+Control:
+- Shuffle Partitions : 200
+- Broadcast Join     : No
+- Caching            : No
+- Partition Pruning  : No
+
+Change Applied:
+- Read format  : CSV → Parquet
+- Write format : CSV → Parquet
+
+------------------------------------------------------------
+Stage Timings
+------------------------------------------------------------
+
+Stage           Baseline    Exp1     Improvement
+------------------------------------------------------------
+Read            9.29s       5.63s    -39.4%
+Join            1.95s       2.34s    +20.0% (slightly worse)
+Aggregation     3.41s       3.10s    -9.1%
+Write           5.71s       4.62s    -19.1%
+------------------------------------------------------------
+TOTAL           20.36s      15.69s   -22.9%
+------------------------------------------------------------
+
+Key Observations:
+- Major improvement in read time due to columnar format.
+- Write performance improved moderately.
+- Join stage slightly slower (format not the bottleneck).
+- Overall runtime reduced by ~23%.
+
+Conclusion:
+Switching to Parquet alone reduced total runtime by nearly 5 seconds.
+File format was the dominant bottleneck in the baseline.
