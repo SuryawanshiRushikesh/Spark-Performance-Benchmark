@@ -1,0 +1,114 @@
+============================================================
+FINAL ANALYSIS — Spark Performance Optimization Study
+============================================================
+
+Objective:
+Evaluate and optimize Spark workload performance using
+systematic experimentation and isolated variable testing.
+
+Baseline:
+------------------------------------------------------------
+File Format        : CSV
+Shuffle Partitions : 200
+Broadcast Join     : No
+Partitioning       : None
+------------------------------------------------------------
+Total Runtime      : 20.36s
+------------------------------------------------------------
+
+Key Findings & Optimization Impact
+============================================================
+
+1) File Format Optimization (CSV → Parquet)
+------------------------------------------------------------
+Result: 20.36s → 15.69s
+Improvement: ~23%
+
+Insight:
+- Columnar storage significantly reduces scan cost.
+- CSV parsing overhead was a major bottleneck.
+- Storage format is often the first and highest impact change.
+
+------------------------------------------------------------
+
+2) Broadcast Join Optimization
+------------------------------------------------------------
+Result: 15.69s → 14.27s
+Improvement: ~9%
+
+Insight:
+- Join was not the primary bottleneck.
+- Broadcast provided modest gains in local mode.
+- Optimization effectiveness depends on cluster topology.
+
+------------------------------------------------------------
+
+3) Partition Pruning
+------------------------------------------------------------
+Full Scan: 13.03s
+Pruned Scan: 4.98s
+Improvement: ~62%
+
+Insight:
+- Data layout has greater impact than compute tuning.
+- Filtering on partition column avoids full table scan.
+- Storage design is critical for selective workloads.
+
+------------------------------------------------------------
+
+4) Shuffle Partition Tuning
+------------------------------------------------------------
+200 partitions → 11.74s
+25 partitions  → 3.16s
+Improvement: ~73%
+
+Insight:
+- Over-parallelization creates scheduling overhead.
+- Optimal shuffle partitions depend on workload size.
+- After pruning, 200 partitions was excessive.
+
+------------------------------------------------------------
+
+Final Optimized Scenario
+============================================================
+
+Combining:
+- Parquet format
+- Broadcast joins
+- Partition pruning
+- 25 shuffle partitions
+
+Best Observed Runtime:
+------------------------------------------------------------
+3.16 seconds
+------------------------------------------------------------
+
+Total Improvement from Baseline:
+20.36s → 3.16s
+~84% reduction in runtime
+
+============================================================
+
+Core Lessons
+============================================================
+
+1. Storage format impacts performance more than compute tricks.
+2. Data layout (partitioning) is critical for scalable systems.
+3. Join strategy optimization must target actual bottlenecks.
+4. Shuffle partition count must match workload size.
+5. Performance tuning must be data-driven, not assumption-driven.
+
+============================================================
+
+Conclusion
+============================================================
+
+This study demonstrates systematic Spark optimization through
+controlled experimentation. Performance improvements were
+achieved without hardware changes, purely through architectural
+and configuration-level optimizations.
+
+The final optimized workload achieved an ~84% reduction in
+execution time compared to the original baseline.
+
+============================================================
